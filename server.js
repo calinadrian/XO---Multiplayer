@@ -206,23 +206,11 @@ function removePlayer(playerId) {
   if (lobby) {
     lobby.players = lobby.players.filter(p => p.id !== playerId);
 
-    // If lobby is empty or has only 1 player, clean it up after a delay
-    if (lobby.players.length === 0) {
-      lobbies.delete(playerData.lobbyId);
-    } else if (lobby.players.length === 1) {
-      // Single player left - reset ready and remove from lobby
-      lobby.players[0].ready = false;
-      broadcastLobbyUpdate(playerData.lobbyId);
-
-      // Clean up empty lobbies after 30 seconds
-      setTimeout(() => {
-        if (lobbies.has(playerData.lobbyId) && lobbies.get(playerData.lobbyId).players.length === 0) {
-          lobbies.delete(playerData.lobbyId);
-        }
-      }, 30000);
-    } else {
+    // Always delete the lobby when any player leaves - a 1-player lobby has no purpose
+    if (lobby.players.length > 0) {
       broadcastLobbyUpdate(playerData.lobbyId);
     }
+    lobbies.delete(playerData.lobbyId);
   }
 
   players.delete(playerId);
@@ -234,8 +222,7 @@ function removePlayer(playerId) {
  * Forward a signaling message to the opponent in the same lobby
  * @param {string} fromPlayerId - Sender player ID
  * @param {object} message - The signaling message
- */
-function forwardSignaling(fromPlayerId, message) {
+ */function forwardSignaling(fromPlayerId, message) {
   const playerData = players.get(fromPlayerId);
   if (!playerData) return;
 
