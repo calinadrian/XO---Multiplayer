@@ -1,0 +1,15 @@
+{
+  "name": "tictactoe-multiplayer",
+  "version": "1.0.0",
+  "description": "Multiplayer Tic-Tac-Toe with WebRTC P2P communication and WebSocket signaling",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.16.0"
+  },
+  "keywords": ["tic-tac-toe", "multiplayer", "webrtc", "websocket", "p2p"],
+  "license": "MIT"
+}

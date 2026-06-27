@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic-Tac-Toe — Multiplayer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Notification Container -->
+  <div id="notification-container"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <h1 class="app-title">
+        <span class="title-x">X</span>
+        <span class="title-o">O</span>
+        Tic-Tac-Toe
+      </h1>
+      <p class="app-subtitle">Multiplayer • Peer-to-Peer</p>
+    </header>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SCREEN 1: Name Entry                        -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section id="screen-name" class="screen active">
+      <div class="card">
+        <h2>Enter Your Name</h2>
+        <form id="name-form" onsubmit="return false;">
+          <div class="form-group">
+            <label for="name-input">Display Name</label>
+            <input
+              type="text"
+              id="name-input"
+              placeholder="Enter your name..."
+              maxlength="20"
+              autofocus
+              autocomplete="off"
+            />
+          </div>
+          <button type="submit" id="name-submit" class="btn btn-primary btn-large">
+            <span class="btn-icon">▶</span> Start
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SCREEN 2: Lobby List                        -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section id="screen-lobby_list" class="screen">
+      <div class="card">
+        <h2>Lobby List</h2>
+
+        <div class="lobby-actions">
+          <button id="create-lobby-btn" class="btn btn-primary">
+            <span class="btn-icon">+</span> Create Lobby
+          </button>
+          <button id="refresh-lobby-btn" class="btn btn-secondary">
+            <span class="btn-icon">↻</span> Refresh
+          </button>
+        </div>
+
+        <div class="join-section">
+          <h3>Or Join by ID</h3>
+          <div class="join-form">
+            <input
+              type="text"
+              id="lobby-id-input"
+              placeholder="Enter 8-char ID"
+              maxlength="8"
+              autocomplete="off"
+            />
+            <button id="join-lobby-btn" class="btn btn-secondary">Join</button>
+          </div>
+        </div>
+
+        <div id="lobby-list-items" class="lobby-list">
+          <!-- Lobby items rendered here by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SCREEN 3: Lobby                             -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section id="screen-lobby" class="screen">
+      <div class="card">
+        <div class="lobby-header">
+          <h2>Lobby</h2>
+          <div class="lobby-id">
+            <span class="lobby-id-label">ID:</span>
+            <span id="lobby-id-display" class="lobby-id-value">------</span>
+            <button id="copy-lobby-id" class="btn-icon-btn" title="Copy ID" onclick="copyLobbyId()">📋</button>
+          </div>
+        </div>
+
+        <div id="lobby-players" class="lobby-players">
+          <!-- Player rows rendered here by JS -->
+        </div>
+
+        <div class="lobby-actions">
+          <button id="ready-btn" class="btn btn-primary btn-large" disabled>
+            <span class="btn-icon">✓</span> I'm Ready
+          </button>
+          <button id="leave-lobby-btn" class="btn btn-danger">
+            <span class="btn-icon">✕</span> Leave
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SCREEN 4: Game                              -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section id="screen-game" class="screen">
+      <!-- Player indicators -->
+      <div class="game-info">
+        <div class="player-indicator player-x" id="player-x-timer">
+          <span class="player-symbol-small x">X</span>
+          <span class="player-name-small" id="x-name">Player X</span>
+        </div>
+        <div class="game-status" id="game-status">Waiting...</div>
+        <div class="player-indicator player-o" id="player-o-timer">
+          <span class="player-symbol-small o">O</span>
+          <span class="player-name-small" id="o-name">Player O</span>
+        </div>
+      </div>
+
+      <!-- Game Board -->
+      <div id="game-board" class="game-board">
+        <!-- 9 cells rendered by JS -->
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- OVERLAY: Waiting for Opponent                -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div id="waiting-overlay" class="overlay">
+      <div class="overlay-content">
+        <div class="spinner"></div>
+        <h2>Waiting for Opponent...</h2>
+        <p>Both players must be ready to start.</p>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- OVERLAY: Game Result                         -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div id="result-overlay" class="overlay">
+      <div class="overlay-content result-content">
+        <div id="result-message">
+          <!-- Filled by JS -->
+        </div>
+        <div class="result-actions">
+          <button id="result-back-lobby-btn" class="btn btn-danger btn-large">
+            <span class="btn-icon">↻</span> Back to Lobby List
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts loaded in order -->
+  <script src="network.js"></script>
+  <script src="game.js"></script>
+  <script src="lobby.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
