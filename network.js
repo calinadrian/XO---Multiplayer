@@ -98,11 +98,26 @@ class Network {
   connect() {
     return new Promise((resolve, reject) => {
       this.connectionState = 'connecting';
+      let settled = false;
+
+      const timeout = setTimeout(() => {
+        if (!settled) {
+          settled = true;
+          this.connectionState = 'disconnected';
+          reject(new Error('Connection timed out after 10 seconds'));
+          if (this.ws) {
+            this.ws.close();
+          }
+        }
+      }, 10000);
 
       try {
         this.ws = new WebSocket(this.serverUrl);
 
         this.ws.onopen = () => {
+          clearTimeout(timeout);
+          if (settled) return;
+          settled = true;
           this.connectionState = 'connected';
           this.emit('ws_connected', true);
           resolve();
@@ -113,19 +128,31 @@ class Network {
         };
 
         this.ws.onerror = (error) => {
-          console.error('WebSocket error:', error);
-          this.connectionState = 'error';
+          // Don't reject immediately — onerror can fire during the handshake
+          // even when the connection will eventually succeed (common with
+          // external IPs / NAT / firewalls). Just log and wait for onopen.
+          console.warn('WebSocket error (may recover):', error);
           this.emit('ws_error', error);
-          reject(error);
         };
 
-        this.ws.onclose = () => {
-          this.connectionState = 'disconnected';
+        this.ws.onclose = (event) => {
+          if (!settled) {
+            settled = true;
+            clearTimeout(timeout);
+            this.connectionState = 'disconnected';
+            reject(new Error(`WebSocket closed (code: ${event.code}, reason: ${event.reason || 'no reason'})`));
+          } else {
+            this.connectionState = 'disconnected';
+          }
           this.emit('ws_disconnected', true);
         };
       } catch (err) {
-        this.connectionState = 'error';
-        reject(err);
+        clearTimeout(timeout);
+        if (!settled) {
+          settled = true;
+          this.connectionState = 'error';
+          reject(err);
+        }
       }
     });
   }
