@@ -582,7 +582,8 @@ input[type="text"]::placeholder {
 .game-board {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 6px;
   margin-bottom: var(--spacing-lg);
   aspect-ratio: 1;
   max-width: 360px;
@@ -600,16 +601,15 @@ input[type="text"]::placeholder {
   font-size: 3rem;
   font-weight: 800;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
   user-select: none;
   position: relative;
-  height: 100px;
+  aspect-ratio: 1;
 }
 
 .cell:hover:not(.taken) {
   border-color: var(--color-primary);
   background: var(--color-surface-hover);
-  transform: scale(1.03);
 }
 
 .cell.taken {
